@@ -7,8 +7,8 @@ import time
 from tensorflow.contrib.learn.python.learn.datasets import base
 import tensorflow as tf
 import numpy as np
-import src.model as model
-import src.input_data as input_data
+import model
+import input_data
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -79,7 +79,9 @@ def do_eval(sess,
 
 def run_training():
     """train model for a number of steps"""
+    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  start reading data")
     data_sets = input_data.read_data("invited_info_trainoutput.txt")
+    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  end reading data")
     with tf.Graph().as_default():
         docs_placeholder, labels_placeholder = placeholder_inputs(FLAGS.batch_size)
         logits = model.inference(docs_placeholder, FLAGS.hidden1, FLAGS.hidden2)

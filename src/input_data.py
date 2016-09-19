@@ -86,12 +86,12 @@ def fake():
 def read_data(file_name):
     file = open(file_name, 'r')
     arr = numpy.loadtxt(file, delimiter=',')
+    file.close()
     #random shuflle those data
     # perm = numpy.arange(numpy.shape(arr)[0])
     # numpy.random.shuffle(perm)
     # arr = arr[perm]
-    train = DataSet(arr[:, 0:232], arr[:, 233], dtype=dtypes.float32, reshape=False)
+    train = DataSet(arr[:, 0:233], arr[:, 233:234], dtype=dtypes.float32, reshape=False)
     validation = DataSet([], [], fake_data=True)
     test = DataSet([], [], fake_data=True)
-
     return base.Datasets(train=train, validation=validation, test=test)
