@@ -23,6 +23,7 @@ flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data '
                      'for unit testing.')
 DOC_FEATURE_SIZE = 233
 
+
 def placeholder_inputs(batch_size):
     """Generate placeholder variables to represent the input tensors.
     These placeholders are used as inputs by the rest of the model building
@@ -40,6 +41,7 @@ def placeholder_inputs(batch_size):
     labels_placeholder = tf.placeholder(tf.int32, shape=batch_size)
     return docs_placeholder, labels_placeholder
 
+
 def fill_feed_dict(data_set, docs_pl, labels_pl):
     docs_feed, labels_feed = data_set.next_batch(FLAGS.batch_size, FLAGS.fake_data)
     feed_dict = {
@@ -47,6 +49,7 @@ def fill_feed_dict(data_set, docs_pl, labels_pl):
         labels_pl: labels_feed
     }
     return feed_dict
+
 
 def do_eval(sess,
             eval_correct,
@@ -72,6 +75,7 @@ def do_eval(sess,
     precision = true_count / num_examples
     print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
         (num_examples, true_count, precision))
+
 
 def run_training():
     """train model for a number of steps"""
