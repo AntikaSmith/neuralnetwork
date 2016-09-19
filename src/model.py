@@ -53,7 +53,7 @@ def loss(logits, labels):
       Returns:
         loss: Loss tensor of type float.
       """
-    labels = tf.to_int64(labels)
+    #labels = tf.to_int64(labels)
     cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(
         logits, labels, name='xentropy')
     loss = tf.reduce_mean(cross_entropy, name='xentropy_mean')
