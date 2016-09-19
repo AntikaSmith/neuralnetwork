@@ -13,7 +13,7 @@ import input_data
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
-flags.DEFINE_integer('max_steps', 20000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 50000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 8, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
@@ -38,7 +38,7 @@ def placeholder_inputs(batch_size):
     # image and label tensors, except the first dimension is now batch_size
     # rather than the full size of the train or test data sets.
     docs_placeholder = tf.placeholder(tf.float32, shape=(batch_size, DOC_FEATURE_SIZE))
-    labels_placeholder = tf.placeholder(tf.float32, shape=(batch_size,1))#todo: float or int? that is a question
+    labels_placeholder = tf.placeholder(tf.int32, shape=batch_size)#todo: float or int? that is a question
     return docs_placeholder, labels_placeholder
 
 

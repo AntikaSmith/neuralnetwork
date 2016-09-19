@@ -91,7 +91,7 @@ def read_data(file_name):
     # perm = numpy.arange(numpy.shape(arr)[0])
     # numpy.random.shuffle(perm)
     # arr = arr[perm]
-    train = DataSet(arr[:, 0:233], arr[:, 233:234], dtype=dtypes.float32, reshape=False)
+    train = DataSet(arr[:, 0:233], arr[:, 233].astype(int), dtype=dtypes.float32, reshape=False)
     validation = DataSet([], [], fake_data=True)
     test = DataSet([], [], fake_data=True)
     return base.Datasets(train=train, validation=validation, test=test)

@@ -3,7 +3,7 @@ import tensorflow as tf
 import math
 
 DOC_FEATURE_SIZE = 233
-NUM_CLASS = 1
+NUM_CLASS = 2
 def inference(docs, hidden1_units, hidden2_units):
     """build the classification model, it contains one tanh hidden layer.
     one RELU hidden layer and linear sigmoid output layer
@@ -42,7 +42,7 @@ def inference(docs, hidden1_units, hidden2_units):
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        logits = tf.sigmoid(tf.matmul(hidden2, weights) + biases)
+        logits = tf.matmul(hidden2, weights) + biases
     return logits
 
 def loss(logits, labels):
@@ -53,8 +53,9 @@ def loss(logits, labels):
       Returns:
         loss: Loss tensor of type float.
       """
-    #labels = tf.to_int64(labels)
-    cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(
+    labels = tf.to_int64(labels)
+    print(labels.get_shape())
+    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
         logits, labels, name='xentropy')
     loss = tf.reduce_mean(cross_entropy, name='xentropy_mean')
     return loss
@@ -78,7 +79,8 @@ def training(loss, learningrate):
     return train_op
 
 def evaluation(logits, lables):
-    predict = tf.less(tf.abs(tf.sub(logits, lables)), 0.5)
-    return tf.reduce_sum(tf.cast(predict, tf.int32))
+    correct = tf.nn.in_top_k(logits, lables, 1)
+    # Return the number of true entries.
+    return tf.reduce_sum(tf.cast(correct, tf.int32))
 
 
