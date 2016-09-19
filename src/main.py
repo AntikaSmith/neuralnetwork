@@ -13,7 +13,7 @@ import input_data
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
-flags.DEFINE_integer('max_steps', 2000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 20000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 8, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
@@ -71,7 +71,7 @@ def do_eval(sess,
     num_examples = steps_per_epoch * FLAGS.batch_size
     for step in range(steps_per_epoch):
         feed_dict = fill_feed_dict(data_set, docs_placeholder, labels_placeholder)
-    true_count += sess.run(eval_correct, feed_dict=feed_dict)
+        true_count += sess.run(eval_correct, feed_dict=feed_dict)
     precision = true_count / num_examples
     print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
         (num_examples, true_count, precision))
@@ -100,22 +100,22 @@ def run_training():
             _, loss_value = sess.run([train_op, loss], feed_dict)
             duration = time.time() - start_time
 
-        if step % 100 == 0:
-            print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
-            # Update the events file.
-            summary_str = sess.run(summary_op, feed_dict=feed_dict)
-            summary_writer.add_summary(summary_str, step)
-            summary_writer.flush()
-        if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
-            checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
-            saver.save(sess, checkpoint_file, global_step=step)
-            # Evaluate against the training set.
-            print('Training Data Eval:')
-            do_eval(sess,
-                    eval_correct,
-                    docs_placeholder,
-                    labels_placeholder,
-                    data_sets.train)
+            if step % 100 == 0:
+                print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
+                # Update the events file.
+                summary_str = sess.run(summary_op, feed_dict=feed_dict)
+                summary_writer.add_summary(summary_str, step)
+                summary_writer.flush()
+            if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+                checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
+                saver.save(sess, checkpoint_file, global_step=step)
+                # Evaluate against the training set.
+                print('Training Data Eval:')
+                do_eval(sess,
+                        eval_correct,
+                        docs_placeholder,
+                        labels_placeholder,
+                        data_sets.train)
             # Evaluate against the validation set.
             # print('Validation Data Eval:')
             # do_eval(sess,
