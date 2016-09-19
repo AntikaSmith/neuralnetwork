@@ -78,7 +78,7 @@ def training(loss, learningrate):
     return train_op
 
 def evaluation(logits, lables):
-    predict = tf.less(tf.abs(tf.sub(logits - lables)), 0.5)
+    predict = tf.less(tf.abs(tf.sub(logits, lables)), 0.5)
     return tf.reduce_sum(tf.cast(predict, tf.int32))
 
 
