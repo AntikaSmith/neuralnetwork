@@ -89,8 +89,8 @@ def run_training():
         train_op = model.training(loss, FLAGS.learning_rate)
         eval_correct = model.evaluation(logits, labels_placeholder)
         summary_op = tf.merge_all_summaries()
-        init = tf.initialize_all_tables()
-        saver = tf.train.Saver
+        init = tf.initialize_all_variables()
+        saver = tf.train.Saver()
         sess = tf.Session()
         summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, sess.graph)
         sess.run(init)

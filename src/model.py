@@ -42,7 +42,7 @@ def inference(docs, hidden1_units, hidden2_units):
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        logits = tf.matmul(hidden2, weights) + biases
+        logits = tf.sigmoid(tf.matmul(hidden2, weights) + biases)
     return logits
 
 def loss(logits, labels):
