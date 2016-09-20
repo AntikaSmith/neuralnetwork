@@ -4,7 +4,9 @@ import math
 
 DOC_FEATURE_SIZE = 133
 NUM_CLASS = 2
-def inference(docs, hidden1_units, hidden2_units):
+
+
+def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
     """build the classification model, it contains one tanh hidden layer.
     one RELU hidden layer and linear sigmoid output layer
     Args:
@@ -42,7 +44,8 @@ def inference(docs, hidden1_units, hidden2_units):
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        logits = tf.nn.softmax(tf.matmul(hidden2, weights) + biases)
+        h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
+        logits = tf.nn.softmax(tf.matmul(h_fc1_drop, weights) + biases)
     return logits
 
 def loss(logits, labels):
