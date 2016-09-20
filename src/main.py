@@ -16,7 +16,7 @@ flags.DEFINE_float('learning_rate', 0.2, 'Initial learning rate.')
 flags.DEFINE_float("dropout_rate", 0.5, "output layer dropout rate")
 flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
-flags.DEFINE_integer('hidden2', 16, 'Number of units in hidden layer 2.')
+flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
 flags.DEFINE_string('train_dir', 'data', 'Directory to put the training data.')
@@ -75,7 +75,7 @@ def do_eval(sess,
     steps_per_epoch = data_set.num_examples // FLAGS.batch_size
     num_examples = steps_per_epoch * FLAGS.batch_size
     for step in range(steps_per_epoch):
-        feed_dict = fill_feed_dict(data_set, docs_placeholder, labels_placeholder, keep_prob_placeholder, keep_prob)
+        feed_dict = fill_feed_dict(data_set, docs_placeholder, labels_placeholder, keep_prob_placeholder, 1)
         true_count += sess.run(eval_correct, feed_dict=feed_dict)
     precision = true_count / num_examples
     print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
