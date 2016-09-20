@@ -92,7 +92,7 @@ def read_data(file_name):
     # perm = numpy.arange(numpy.shape(arr)[0])
     # numpy.random.shuffle(perm)
     # arr = arr[perm]
-    train = DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE:(model.DOC_FEATURE_SIZE + 1)], dtype=dtypes.float32, reshape=False)
+    train = DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE].astype(int), dtype=dtypes.float32, reshape=False)
     validation = DataSet([], [], fake_data=True)
     test = DataSet([], [], fake_data=True)
     return base.Datasets(train=train, validation=validation, test=test)

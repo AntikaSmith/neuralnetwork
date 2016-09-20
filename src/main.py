@@ -38,7 +38,7 @@ def placeholder_inputs(batch_size):
     # image and label tensors, except the first dimension is now batch_size
     # rather than the full size of the train or test data sets.
     docs_placeholder = tf.placeholder(tf.float32, shape=(batch_size, DOC_FEATURE_SIZE))
-    labels_placeholder = tf.placeholder(tf.float32, shape=(batch_size,1))#todo: float or int? that is a question
+    labels_placeholder = tf.placeholder(tf.int32, shape=batch_size)#todo: float or int? that is a question
     return docs_placeholder, labels_placeholder
 
 
