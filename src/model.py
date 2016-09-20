@@ -2,7 +2,7 @@ import tensorflow as tf
 
 import math
 
-DOC_FEATURE_SIZE = 233
+DOC_FEATURE_SIZE = 133
 NUM_CLASS = 1
 def inference(docs, hidden1_units, hidden2_units):
     """build the classification model, it contains one tanh hidden layer.
