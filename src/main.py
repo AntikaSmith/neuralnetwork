@@ -117,13 +117,13 @@ def run_training():
                         docs_placeholder,
                         labels_placeholder,
                         data_sets.train)
-            # Evaluate against the validation set.
-            # print('Validation Data Eval:')
-            # do_eval(sess,
-            #         eval_correct,
-            #         docs_placeholder,
-            #         labels_placeholder,
-            #         data_sets.validation)
+                # Evaluate against the validation set.
+                print('Validation Data Eval:')
+                do_eval(sess,
+                        eval_correct,
+                        docs_placeholder,
+                        labels_placeholder,
+                        data_sets.validation)
             # # Evaluate against the test set.
             # print('Test Data Eval:')
             # do_eval(sess,

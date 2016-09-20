@@ -84,15 +84,24 @@ def fake():
     return DataSet([], [], fake_data=True, one_hot=True, dtype=dtypes.float32)
 
 
+def random_split(arr, ratio):
+    shape = arr.shape[0]
+    size = int(shape * ratio)
+    numpy.random.shuffle(arr)
+    return arr[:size, :], arr[size:, :]
+
+
+def construct_set(arr):
+    return DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE].astype(int), dtype=dtypes.float32,
+            reshape=False)
+
+
 def read_data(file_name):
     file = open(file_name, 'r')
     arr = numpy.loadtxt(file, delimiter=',')
     file.close()
-    #random shuflle those data
-    # perm = numpy.arange(numpy.shape(arr)[0])
-    # numpy.random.shuffle(perm)
-    # arr = arr[perm]
-    train = DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE].astype(int), dtype=dtypes.float32, reshape=False)
-    validation = DataSet([], [], fake_data=True)
+    training, validating = random_split(arr, 0.8)
+    train = construct_set(training)
+    validation = construct_set(validating)
     test = DataSet([], [], fake_data=True)
     return base.Datasets(train=train, validation=validation, test=test)
