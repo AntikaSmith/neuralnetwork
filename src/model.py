@@ -2,7 +2,7 @@ import tensorflow as tf
 
 import math
 
-DOC_FEATURE_SIZE = 833
+DOC_FEATURE_SIZE = 133
 NUM_CLASS = 2
 def inference(docs, hidden1_units, hidden2_units):
     """build the classification model, it contains one tanh hidden layer.
@@ -73,7 +73,7 @@ def training(loss, learningrate):
     train_op: The Op for training.
     """
     tf.scalar_summary(loss.op.name, loss)
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learningrate)
+    optimizer = tf.train.AdamOptimizer()
     global_step = tf.Variable(0, name='global_step', trainable=False)
     train_op = optimizer.minimize(loss, global_step=global_step)
     return train_op
