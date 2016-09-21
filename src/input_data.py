@@ -96,12 +96,31 @@ def construct_set(arr):
             reshape=False)
 
 
+def construct_train(train):
+    ones = train[:, model.DOC_FEATURE_SIZE]
+    zeros = 1 - ones
+    one_array = numpy.compress(ones, train, axis=0)
+    one_size = len(one_array)
+    zero_array = numpy.compress(zeros, train, axis=0)
+    ret = [0] * 8
+    for i in range(0, 8):
+        start = i*one_size
+        stop = (i+1)*one_size
+        ret[i] = numpy.concatenate((one_array, zero_array[start:stop]), axis=0)
+        numpy.random.shuffle(ret[i])
+    return ret
+
+
 def read_data(file_name):
     file = open(file_name, 'r')
     arr = numpy.loadtxt(file, delimiter=',')
     file.close()
     training, validating = random_split(arr, 0.8)
-    train = construct_set(training)
-    validation = construct_set(validating)
-    test = DataSet([], [], fake_data=True)
-    return base.Datasets(train=train, validation=validation, test=test)
+    train_arrays = construct_train(training)
+    ret = [0] * 8
+    for i in range(0, 8):
+        train = construct_set(train_arrays[i])
+        validation = construct_set(validating)
+        test = DataSet([], [], fake_data=True)
+        ret[i] = base.Datasets(train=train, validation=validation, test=test)
+    return ret

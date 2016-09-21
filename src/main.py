@@ -85,7 +85,7 @@ def do_eval(sess,
 def run_training():
     """train model for a number of steps"""
     print(time.strftime("%Y-%m-%d %H:%M:%S") + "  start reading data")
-    data_sets = input_data.read_data("invited_info_trainoutput.txt")
+    data_sets = input_data.read_data("invited_info_trainoutput.txt")[0]
     print(time.strftime("%Y-%m-%d %H:%M:%S") + "  end reading data")
     with tf.Graph().as_default():
         docs_placeholder, labels_placeholder, keep_prob_placeholder = placeholder_inputs(FLAGS.batch_size)
