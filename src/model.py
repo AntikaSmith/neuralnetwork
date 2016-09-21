@@ -4,7 +4,9 @@ import math
 
 DOC_FEATURE_SIZE = 133
 NUM_CLASS = 1
-def inference(docs, hidden1_units, hidden2_units):
+
+
+def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
     """build the classification model, it contains one tanh hidden layer.
     one RELU hidden layer and linear sigmoid output layer
     Args:
@@ -42,8 +44,10 @@ def inference(docs, hidden1_units, hidden2_units):
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        logits = tf.sigmoid(tf.matmul(hidden2, weights) + biases)
+        h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
+        logits = tf.nn.sigmoid(tf.matmul(h_fc1_drop, weights) + biases)
     return logits
+
 
 def loss(logits, labels):
     """Calculates the loss from the logits and the labels.
@@ -53,29 +57,29 @@ def loss(logits, labels):
       Returns:
         loss: Loss tensor of type float.
       """
-    #labels = tf.to_int64(labels)
     cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(
         logits, labels, name='xentropy')
-    loss = tf.reduce_mean(cross_entropy, name='xentropy_mean')
-    return loss
+    return tf.reduce_mean(cross_entropy, name='xentropy_mean')
 
-def training(loss, learningrate):
+
+def training(loss_tensor, learningrate):
     """Sets up the training Ops.
     Creates a summarizer to track the loss over time in TensorBoard.
     Creates an optimizer and applies the gradients to all trainable variables.
     The Op returned by this function is what must be passed to the
     `sess.run()` call to cause the model to train.
     Args:
-      loss: Loss tensor, from loss().
+      loss_tensor: Loss tensor, from loss().
       learning_rate: The learning rate to use for gradient descent.
     Returns:
     train_op: The Op for training.
     """
-    tf.scalar_summary(loss.op.name, loss)
+    tf.scalar_summary(loss_tensor.op.name, loss_tensor)
     optimizer = tf.train.AdamOptimizer()
     global_step = tf.Variable(0, name='global_step', trainable=False)
-    train_op = optimizer.minimize(loss, global_step=global_step)
+    train_op = optimizer.minimize(loss_tensor, global_step=global_step)
     return train_op
+
 
 def evaluation(logits, lables):
     predict = tf.less(tf.abs(tf.sub(logits, lables)), 0.5)
