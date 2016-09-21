@@ -110,11 +110,9 @@ def save_logits(sess,
     file.close()
 
 
-def run_training():
+def run_training(data_sets, output_name):
     """train model for a number of steps"""
-    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  start reading data")
-    data_sets = input_data.read_data("invited_info_trainoutput.txt")[0]
-    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  end reading data")
+    #data_sets = input_data.read_data("invited_info_trainoutput.txt")[0]
     with tf.Graph().as_default():
         docs_placeholder, labels_placeholder, keep_prob_placeholder = placeholder_inputs(FLAGS.batch_size)
         logits = model.inference(docs_placeholder, FLAGS.hidden1, FLAGS.hidden2, keep_prob_placeholder)
@@ -164,7 +162,7 @@ def run_training():
                         docs_placeholder,
                         labels_placeholder,
                         keep_prob_placeholder,
-                        data_sets.validation, "validate_output.txt")
+                        data_sets.validation, output_name)
 
             # # Evaluate against the test set.
             # print('Test Data Eval:')
@@ -176,7 +174,11 @@ def run_training():
 
 
 def main(_):
-    run_training()
+    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  start reading data")
+    data_sets_arr = input_data.read_data("invited_info_trainoutput.txt", "validate_nolabeloutput.txt")
+    print(time.strftime("%Y-%m-%d %H:%M:%S") + "  end reading data")
+    for i in range(len(data_sets_arr)):
+        run_training(data_sets_arr[i], "validate_" + str(i) + "_output.txt")
 
 
 if __name__ == '__main__':

@@ -96,7 +96,7 @@ def construct_set(arr):
             reshape=False)
 
 
-def construct_train(train):
+def balance_positve_trains(train):
     ones = train[:, model.DOC_FEATURE_SIZE]
     zeros = 1 - ones
     one_array = numpy.compress(ones, train, axis=0)
@@ -111,12 +111,15 @@ def construct_train(train):
     return ret
 
 
-def read_data(file_name):
-    file = open(file_name, 'r')
-    arr = numpy.loadtxt(file, delimiter=',')
-    file.close()
-    training, validating = random_split(arr, 0.8)
-    train_arrays = construct_train(training)
+def read_data(train_file, validate_file_name):
+    train_file = open(train_file, 'r')
+    training = numpy.loadtxt(train_file, delimiter=',')
+    train_file.close()
+    train_arrays = balance_positve_trains(training)
+    #read validate file
+    validate_file = open(validate_file_name, 'r')
+    validating = numpy.loadtxt(validate_file, delimiter=',')
+    validate_file.close()
     ret = [0] * 8
     for i in range(0, 8):
         train = construct_set(train_arrays[i])
