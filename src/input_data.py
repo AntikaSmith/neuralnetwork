@@ -3,6 +3,10 @@ from tensorflow.python.framework import dtypes
 from tensorflow.contrib.learn.python.learn.datasets import base
 import model
 
+
+TRAIN_PARTITION_NO = 8
+
+
 class DataSet(object):
 
     def __init__(self,
@@ -120,8 +124,8 @@ def read_data(train_file, validate_file_name):
     validate_file = open(validate_file_name, 'r')
     validating = numpy.loadtxt(validate_file, delimiter=',')
     validate_file.close()
-    ret = [0] * 8
-    for i in range(0, 8):
+    ret = [0] * TRAIN_PATITION_NO
+    for i in range(0, TRAIN_PATITION_NO):
         train = construct_set(train_arrays[i])
         validation = construct_set(validating)
         test = DataSet([], [], fake_data=True)
