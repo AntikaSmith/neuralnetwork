@@ -100,7 +100,7 @@ def save_logits(sess,
     """
     # And run one epoch of eval.
     true_count = 0  # Counts the number of correct predictions.
-    steps_per_epoch = data_set.num_examples // FLAGS.batch_size
+    steps_per_epoch = data_set.num_examples // FLAGS.batch_size + 1
     num_examples = steps_per_epoch * FLAGS.batch_size
     file = open(file_name, 'wb')
     for step in range(steps_per_epoch):
@@ -194,6 +194,9 @@ def main(_):
         arr = np.loadtxt(file)
         file.close()
         output_arr[i] = arr[:, 1]
+        for j in range(len(output_arr[i])):
+            if output_arr[i][j] < 1:
+                output_arr[i][j] = 0
     sum_arr = np.sum(output_arr, axis=0) / input_data.TRAIN_PARTITION_NO
     np.savetxt("nn_output.txt", sum_arr, fmt="%.5f")
 
