@@ -200,5 +200,6 @@ def main(_):
     sum_arr = np.sum(output_arr, axis=0) / input_data.TRAIN_PARTITION_NO
     np.savetxt("nn_output.txt", sum_arr, fmt="%.5f")
 
+
 if __name__ == '__main__':
     tf.app.run()
