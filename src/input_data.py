@@ -72,14 +72,18 @@ class DataSet(object):
             # Finished epoch
             self._epochs_completed += 1
             # Shuffle the data
-            perm = numpy.arange(self._num_examples)
-            numpy.random.shuffle(perm)
-            self._docs = self._docs[perm]
-            self._labels = self._labels[perm]
+            # perm = numpy.arange(self._num_examples)
+            # numpy.random.shuffle(perm)
+            # self._docs = self._docs[perm]
+            # self._labels = self._labels[perm]
             # Start next epoch
-            start = 0
-            self._index_in_epoch = batch_size
+            #start = 0
+            difference = self._index_in_epoch - self._num_examples
+            ret_docs = numpy.concatenate((self._docs[start: self._num_examples], self._docs[0:difference]), axis=0)
+            ret_labels = numpy.concatenate((self._labels[start: self._num_examples], self._labels[0:difference]), axis=0)
+            self._index_in_epoch = difference
             assert batch_size <= self._num_examples
+            return ret_docs, ret_labels
         end = self._index_in_epoch
         return self._docs[start:end], self._labels[start:end]
 
@@ -124,10 +128,11 @@ def read_data(train_file, validate_file_name):
     validate_file = open(validate_file_name, 'r')
     validating = numpy.loadtxt(validate_file, delimiter=',')
     validate_file.close()
+    validation = construct_set(validating)
+    #construct data sets
     ret = [0] * TRAIN_PARTITION_NO
     for i in range(0, TRAIN_PARTITION_NO):
         train = construct_set(train_arrays[i])
-        validation = construct_set(validating)
         test = DataSet([], [], fake_data=True)
         ret[i] = base.Datasets(train=train, validation=validation, test=test)
     return ret

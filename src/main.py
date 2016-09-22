@@ -137,7 +137,8 @@ def run_training(data_sets, output_name):
                 summary_str = sess.run(summary_op, feed_dict=feed_dict)
                 summary_writer.add_summary(summary_str, step)
                 summary_writer.flush()
-            if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+            #if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+            if (step + 1) == FLAGS.max_steps:
                 checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
                 saver.save(sess, checkpoint_file, global_step=step)
                 # Evaluate against the training set.
@@ -194,7 +195,7 @@ def main(_):
         file.close()
         output_arr[i] = arr[:, 1]
     sum_arr = np.sum(output_arr, axis=0) / input_data.TRAIN_PARTITION_NO
-    np.savetxt("validate_output.txt", sum_arr, fmt="%.5f")
+    np.savetxt("nn_output.txt", sum_arr, fmt="%.5f")
 
 if __name__ == '__main__':
     tf.app.run()
