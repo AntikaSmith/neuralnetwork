@@ -92,7 +92,7 @@ def random_split(arr, ratio):
 
 
 def construct_set(arr):
-    return DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE].astype(int), dtype=dtypes.float32,
+    return DataSet(arr[:, 0:model.DOC_FEATURE_SIZE], arr[:, model.DOC_FEATURE_SIZE:(model.DOC_FEATURE_SIZE + 1)], dtype=dtypes.float32,
             reshape=False)
 
 

@@ -14,7 +14,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.2, 'Initial learning rate.')
 flags.DEFINE_float("dropout_rate", 0.5, "output layer dropout rate")
-flags.DEFINE_integer('max_steps', 100, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 500000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
@@ -138,25 +138,25 @@ def run_training():
             #     summary_str = sess.run(summary_op, feed_dict=feed_dict)
             #     summary_writer.add_summary(summary_str, step)
             #     summary_writer.flush()
-            # if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
-            #     checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
-            #     saver.save(sess, checkpoint_file, global_step=step)
-            #     # Evaluate against the training set.
-            #     print('Training Data Eval:')
-            #     do_eval(sess,
-            #             eval_correct,
-            #             docs_placeholder,
-            #             labels_placeholder,
-            #             keep_prob_placeholder,
-            #             data_sets.train)
-            #     # Evaluate against the validation set.
-            #     print('Validation Data Eval:')
-            #     do_eval(sess,
-            #             eval_correct,
-            #             docs_placeholder,
-            #             labels_placeholder,
-            #             keep_prob_placeholder,
-            #             data_sets.validation)
+            if (step + 1) % 10000 == 0:
+                checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
+                saver.save(sess, checkpoint_file, global_step=step)
+                # Evaluate against the training set.
+                print('Training Data Eval:')
+                do_eval(sess,
+                        eval_correct,
+                        docs_placeholder,
+                        labels_placeholder,
+                        keep_prob_placeholder,
+                        data_sets.train)
+                # Evaluate against the validation set.
+                print('Validation Data Eval:')
+                do_eval(sess,
+                        eval_correct,
+                        docs_placeholder,
+                        labels_placeholder,
+                        keep_prob_placeholder,
+                        data_sets.validation)
             if (step + 1) == FLAGS.max_steps:
                 save_logits(sess,
                             logits,

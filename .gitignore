@@ -4,3 +4,4 @@ validate_nolabeloutput.txt
 *.pyc
 data
 *output.txt
+tmp.txt
