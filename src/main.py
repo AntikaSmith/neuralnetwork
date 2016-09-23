@@ -12,11 +12,12 @@ import input_data
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_float('learning_rate', 0.2, 'Initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
 flags.DEFINE_float("dropout_rate", 0.5, "output layer dropout rate")
-flags.DEFINE_integer('max_steps', 600000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 500000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
+flags.DEFINE_integer('hidden3', 8, 'Number of units in hidden layer 3.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
 flags.DEFINE_string('train_dir', 'data', 'Directory to put the training data.')
@@ -115,7 +116,7 @@ def run_training(data_sets, output_name):
     #data_sets = input_data.read_data("invited_info_trainoutput.txt")[0]
     with tf.Graph().as_default():
         docs_placeholder, labels_placeholder, keep_prob_placeholder = placeholder_inputs(FLAGS.batch_size)
-        logits = model.inference(docs_placeholder, FLAGS.hidden1, FLAGS.hidden2, keep_prob_placeholder)
+        logits = model.inference(docs_placeholder, FLAGS.hidden1, FLAGS.hidden2, FLAGS.hidden3, keep_prob_placeholder)
         loss = model.loss(logits, labels_placeholder)
         train_op = model.training(loss, FLAGS.learning_rate)
         eval_correct = model.evaluation(logits, labels_placeholder)

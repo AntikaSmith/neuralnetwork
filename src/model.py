@@ -6,7 +6,7 @@ DOC_FEATURE_SIZE = 133
 NUM_CLASS = 2
 
 
-def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
+def inference(docs, hidden1_units, hidden2_units, hidden3_units, keep_prob_placeholder):
     """build the classification model, it contains one tanh hidden layer.
     one RELU hidden layer and linear sigmoid output layer
     Args:
@@ -36,16 +36,25 @@ def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
         biases = tf.Variable(tf.zeros([hidden2_units], name="biases"))
         hidden2 = tf.nn.relu(tf.matmul(hidden1, weights) + biases)
     #hidden layer 3
+    with tf.name_scope("hidden3"):
+        weights = tf.Variable(
+            tf.truncated_normal([hidden2_units, hidden3_units],
+                                stddev=1.0/math.sqrt(float(hidden3_units)),
+                                name="weights")
+        )
+        biases = tf.Variable(tf.zeros([hidden3_units], name="biases"))
+        hidden3 = tf.nn.relu(tf.matmul(hidden2, weights) + biases)
     with tf.name_scope("logistic_layer"):
         weights = tf.Variable(
             tf.truncated_normal(
-                [hidden2_units, NUM_CLASS],stddev=1.0/math.sqrt(float(hidden2_units)),
+                [hidden3_units, NUM_CLASS],stddev=1.0/math.sqrt(float(hidden2_units)),
                 name="weights"
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
-        logits = tf.nn.softmax(tf.matmul(h_fc1_drop, weights) + biases)
+        # h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
+        # logits = tf.nn.softmax(tf.matmul(h_fc1_drop, weights) + biases)
+        logits = tf.nn.softmax(tf.matmul(hidden3, weights) + biases)
     return logits
 
 def loss(logits, labels):
@@ -76,7 +85,7 @@ def training(loss, learningrate):
     train_op: The Op for training.
     """
     tf.scalar_summary(loss.op.name, loss)
-    optimizer = tf.train.AdamOptimizer()
+    optimizer = tf.train.GradientDescentOptimizer(learningrate)
     global_step = tf.Variable(0, name='global_step', trainable=False)
     train_op = optimizer.minimize(loss, global_step=global_step)
     return train_op
