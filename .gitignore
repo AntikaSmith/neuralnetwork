@@ -3,3 +3,4 @@ validate_nolabeloutput.txt
 /.idea
 *.pyc
 data
+*output.txt
