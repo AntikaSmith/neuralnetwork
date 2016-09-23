@@ -14,7 +14,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.2, 'Initial learning rate.')
 flags.DEFINE_float("dropout_rate", 0.5, "output layer dropout rate")
-flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 100, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
@@ -81,6 +81,34 @@ def do_eval(sess,
     print('  Num examples: %d  Num correct: %d  Precision @ 1: %0.04f' %
         (num_examples, true_count, precision))
 
+def save_logits(sess,
+                logits,
+                docs_placeholder,
+                labels_placeholder,
+                keep_prob_placeholder,
+                data_set,
+                file_name):
+    """Runs one evaluation against the full epoch of data.
+    Args:
+    sess: The session in which the model has been trained.
+    eval_correct: The Tensor that returns the number of correct predictions.
+    docs_placeholder: The docs placeholder.
+    labels_placeholder: The labels placeholder.
+    data_set: The set of docs and labels to evaluate, from
+      input_data.read_data_sets().
+    """
+    # And run one epoch of eval.
+    true_count = 0  # Counts the number of correct predictions.
+    steps_per_epoch = data_set.num_examples // FLAGS.batch_size + 1
+    num_examples = steps_per_epoch * FLAGS.batch_size
+    file = open(file_name, 'wb')
+    for step in range(steps_per_epoch):
+        feed_dict = fill_feed_dict(data_set, docs_placeholder, labels_placeholder, keep_prob_placeholder, 1)
+        result = sess.run(logits, feed_dict=feed_dict)
+        print(result)
+        np.savetxt(file, result, fmt='%.5f')
+    file.close()
+
 
 def run_training():
     """train model for a number of steps"""
@@ -130,6 +158,14 @@ def run_training():
                         labels_placeholder,
                         keep_prob_placeholder,
                         data_sets.validation)
+            if (step + 1) == FLAGS.max_steps:
+                save_logits(sess,
+                        eval_correct,
+                        docs_placeholder,
+                        labels_placeholder,
+                        keep_prob_placeholder,
+                        data_sets.validation,
+                            "tmp.txt")
             # # Evaluate against the test set.
             # print('Test Data Eval:')
             # do_eval(sess,
