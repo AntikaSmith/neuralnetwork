@@ -4,7 +4,7 @@ from tensorflow.contrib.learn.python.learn.datasets import base
 import model
 
 
-TRAIN_PARTITION_NO = 8
+TRAIN_PARTITION_NO = 1
 
 
 class DataSet(object):
@@ -110,8 +110,8 @@ def balance_positve_trains(train):
     one_array = numpy.compress(ones, train, axis=0)
     one_size = len(one_array)
     zero_array = numpy.compress(zeros, train, axis=0)
-    ret = [0] * 8
-    for i in range(0, 8):
+    ret = [0] * TRAIN_PARTITION_NO
+    for i in range(0, TRAIN_PARTITION_NO):
         start = i*one_size
         stop = (i+1)*one_size
         ret[i] = numpy.concatenate((one_array, zero_array[start:stop]), axis=0)

@@ -14,7 +14,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.2, 'Initial learning rate.')
 flags.DEFINE_float("dropout_rate", 0.5, "output layer dropout rate")
-flags.DEFINE_integer('max_steps', 100000, 'Number of steps to run trainer.')
+flags.DEFINE_integer('max_steps', 600000, 'Number of steps to run trainer.')
 flags.DEFINE_integer('hidden1', 64, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
@@ -188,15 +188,12 @@ def generate_validate_output():
 
 def main(_):
     generate_validate_output()
-    output_arr = [0] * 8
+    output_arr = [0] * input_data.TRAIN_PARTITION_NO
     for i in range(input_data.TRAIN_PARTITION_NO):
         file = open(get_validate_file_name(i), 'r')
         arr = np.loadtxt(file)
         file.close()
         output_arr[i] = arr[:, 1]
-        for j in range(len(output_arr[i])):
-            if output_arr[i][j] < 1:
-                output_arr[i][j] = 0
     sum_arr = np.sum(output_arr, axis=0) / input_data.TRAIN_PARTITION_NO
     np.savetxt("nn_output.txt", sum_arr, fmt="%.5f")
 
