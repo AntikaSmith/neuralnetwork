@@ -3,7 +3,7 @@ import tensorflow as tf
 import math
 
 DOC_FEATURE_SIZE = 133
-NUM_CLASS = 2
+NUM_CLASS = 1
 
 
 def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
@@ -44,8 +44,8 @@ def inference(docs, hidden1_units, hidden2_units, keep_prob_placeholder):
             )
         )
         biases = tf.Variable(tf.zeros([NUM_CLASS]), name="biases")
-        h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
-        logits = tf.nn.softmax(tf.matmul(h_fc1_drop, weights) + biases)
+        #h_fc1_drop = tf.nn.dropout(hidden2, keep_prob_placeholder)
+        logits = tf.nn.sigmoid(tf.matmul(hidden2, weights) + biases)
     return logits
 
 def loss(logits, labels):
@@ -56,10 +56,10 @@ def loss(logits, labels):
       Returns:
         loss: Loss tensor of type float.
       """
-    labels = tf.to_int64(labels)
-    print(labels.get_shape())
-    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits, labels, name='xentropy')
+    #labels = tf.to_int64(labels)
+    #print(labels.get_shape())
+    cross_entropy = tf.nn.weighted_cross_entropy_with_logits(
+        logits, labels, 9, name='xentropy')
     loss = tf.reduce_mean(cross_entropy, name='xentropy_mean')
     return loss
 
@@ -82,8 +82,7 @@ def training(loss, learningrate):
     return train_op
 
 def evaluation(logits, lables):
-    correct = tf.nn.in_top_k(logits, lables, 1)
-    # Return the number of true entries.
-    return tf.reduce_sum(tf.cast(correct, tf.int32))
+    predict = tf.less(tf.abs(tf.sub(logits, lables)), 0.5)
+    return tf.reduce_sum(tf.cast(predict, tf.int32))
 
 

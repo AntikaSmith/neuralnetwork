@@ -39,7 +39,7 @@ def placeholder_inputs(batch_size):
     # image and label tensors, except the first dimension is now batch_size
     # rather than the full size of the train or test data sets.
     docs_placeholder = tf.placeholder(tf.float32, shape=(batch_size, DOC_FEATURE_SIZE))
-    labels_placeholder = tf.placeholder(tf.int32, shape=batch_size)#todo: float or int? that is a question
+    labels_placeholder = tf.placeholder(tf.float32, shape=(batch_size,1))#todo: float or int? that is a question
     keep_prob_placeholder = tf.placeholder(tf.float32)
     return docs_placeholder, labels_placeholder, keep_prob_placeholder
 
@@ -105,7 +105,6 @@ def save_logits(sess,
     for step in range(steps_per_epoch):
         feed_dict = fill_feed_dict(data_set, docs_placeholder, labels_placeholder, keep_prob_placeholder, 1)
         result = sess.run(logits, feed_dict=feed_dict)
-        print(result)
         np.savetxt(file, result, fmt='%.5f')
     file.close()
 
@@ -133,38 +132,38 @@ def run_training():
             _, loss_value = sess.run([train_op, loss], feed_dict)
             duration = time.time() - start_time
 
-            if step % 100 == 0:
-                print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
-                # Update the events file.
-                summary_str = sess.run(summary_op, feed_dict=feed_dict)
-                summary_writer.add_summary(summary_str, step)
-                summary_writer.flush()
-            if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
-                checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
-                saver.save(sess, checkpoint_file, global_step=step)
-                # Evaluate against the training set.
-                print('Training Data Eval:')
-                do_eval(sess,
-                        eval_correct,
-                        docs_placeholder,
-                        labels_placeholder,
-                        keep_prob_placeholder,
-                        data_sets.train)
-                # Evaluate against the validation set.
-                print('Validation Data Eval:')
-                do_eval(sess,
-                        eval_correct,
-                        docs_placeholder,
-                        labels_placeholder,
-                        keep_prob_placeholder,
-                        data_sets.validation)
+            # if step % 100 == 0:
+            #     print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value, duration))
+            #     # Update the events file.
+            #     summary_str = sess.run(summary_op, feed_dict=feed_dict)
+            #     summary_writer.add_summary(summary_str, step)
+            #     summary_writer.flush()
+            # if (step + 1) % 1000 == 0 or (step + 1) == FLAGS.max_steps:
+            #     checkpoint_file = os.path.join(FLAGS.train_dir, 'checkpoint')
+            #     saver.save(sess, checkpoint_file, global_step=step)
+            #     # Evaluate against the training set.
+            #     print('Training Data Eval:')
+            #     do_eval(sess,
+            #             eval_correct,
+            #             docs_placeholder,
+            #             labels_placeholder,
+            #             keep_prob_placeholder,
+            #             data_sets.train)
+            #     # Evaluate against the validation set.
+            #     print('Validation Data Eval:')
+            #     do_eval(sess,
+            #             eval_correct,
+            #             docs_placeholder,
+            #             labels_placeholder,
+            #             keep_prob_placeholder,
+            #             data_sets.validation)
             if (step + 1) == FLAGS.max_steps:
                 save_logits(sess,
-                        eval_correct,
-                        docs_placeholder,
-                        labels_placeholder,
-                        keep_prob_placeholder,
-                        data_sets.validation,
+                            logits,
+                            docs_placeholder,
+                            labels_placeholder,
+                            keep_prob_placeholder,
+                            data_sets.validation,
                             "tmp.txt")
             # # Evaluate against the test set.
             # print('Test Data Eval:')

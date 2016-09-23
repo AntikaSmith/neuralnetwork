@@ -103,6 +103,6 @@ def read_data(file_name):
     training, validating = random_split(arr, 0.8)
     train = construct_set(training)
     validation = construct_set(validating)
-    numpy.savetxt("validatation_labels", validation.labels)
+    numpy.savetxt("validation_labels_output.txt", validation.labels, fmt="%.1f")
     test = DataSet([], [], fake_data=True)
     return base.Datasets(train=train, validation=validation, test=test)
