@@ -100,8 +100,12 @@ def read_data(file_name):
     file = open(file_name, 'r')
     arr = numpy.loadtxt(file, delimiter=',')
     file.close()
-    training, validating = random_split(arr, 0.8)
+    training = arr
     train = construct_set(training)
+    # read validate file
+    validate_file = open("validate_nolabeloutput.txt", 'r')
+    validating = numpy.loadtxt(validate_file, delimiter=',')
+    validate_file.close()
     validation = construct_set(validating)
     numpy.savetxt("validation_labels_output.txt", validation.labels, fmt="%.1f")
     test = DataSet([], [], fake_data=True)

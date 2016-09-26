@@ -164,7 +164,7 @@ def run_training():
                             labels_placeholder,
                             keep_prob_placeholder,
                             data_sets.validation,
-                            "tmp.txt")
+                            "nn_output.txt")
             # # Evaluate against the test set.
             # print('Test Data Eval:')
             # do_eval(sess,
